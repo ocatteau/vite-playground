@@ -26,16 +26,22 @@ export const TodoInput = ({onItemAdded} : {onItemAdded: (item: TodoItem) => void
   )
 }
 
-export const Todo = ({items}: { items: TodoItem[] }) => {
+export const useTodo = (items: TodoItem[]) => {
   const [todos, setTodos] = useState<TodoItem[]>(items)
 
   const onItemAdded = (item: TodoItem) => {
     setTodos([...todos, item]);
   };
 
-  const toggleItemDone = (itemId: string) => {
+  const markItemAsDone = (itemId: string) => {
     setTodos(todos.filter( todo => todo.id !== itemId));
   };
+
+  return {todos, onItemAdded, markItemAsDone}
+};
+
+export const Todo = ({items}: { items: TodoItem[] }) => {
+  const { todos, onItemAdded, markItemAsDone } = useTodo(items);
 
   return (
     <>
@@ -45,7 +51,7 @@ export const Todo = ({items}: { items: TodoItem[] }) => {
         {
           todos.map((item) =>
             <li key={item.id} role="todo-item">
-              <input type="checkbox" checked={item.done} onChange={() => toggleItemDone(item.id)}/>
+              <input type="checkbox" checked={item.done} onChange={() => markItemAsDone(item.id)}/>
               <span>${item.label}</span>
             </li>)
         }
