@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { TodoItem } from "./tests/Todo.test";
+
+import { TodoItem } from "./TodoItem";
 
 export const useTodo = (items: TodoItem[]) => {
   const [todos, setTodos] = useState<TodoItem[]>(items)

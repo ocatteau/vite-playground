@@ -1,57 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { v4 as uuid } from "uuid";
-import { ChangeEvent, KeyboardEvent, useState } from "react";
-import { useTodo } from "../useTodo";
-
-export interface TodoItem {
-  id: string
-  label: string
-  done: boolean
-}
-
-export const TodoInput = ({onItemAdded} : {onItemAdded: (item: TodoItem) => void}) => {
-  const [todo, setTodo] = useState<string>("");
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setTodo(e.target.value)
-  };
-
-  const handleAddItem = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.code === 'Enter') {
-      onItemAdded({id: uuid(), label: todo, done: false});
-    }
-  };
-
-  return (
-    <input type="text" role="new-item" value={todo} onChange={handleChange} onKeyDown={handleAddItem}/>
-  )
-}
-
-export const TodoList = ({todos, markItemAsDone} : { todos: TodoItem[], markItemAsDone: (itemId: string) => void}) => {
-  return (
-    <ol>
-      {
-        todos.map((item) =>
-          <li key={item.id} role="todo-item">
-            <input type="checkbox" checked={item.done} onChange={() => markItemAsDone(item.id)}/>
-            <span>${item.label}</span>
-          </li>)
-      }
-    </ol>
-  )
-}
-
-export const Todo = ({items}: { items: TodoItem[] }) => {
-  const { todos, onItemAdded, markItemAsDone } = useTodo(items);
-
-  return (
-    <>
-      <h1>Todos :</h1>
-      <TodoInput onItemAdded={onItemAdded}/>
-      <TodoList todos={todos} markItemAsDone={markItemAsDone}/>
-    </>
-  )
-}
+import { Todo } from "../Todo";
 
 describe('Todo App', () => {
   // render an item
