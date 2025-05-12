@@ -33,6 +33,10 @@ export const Todo = ({items}: { items: TodoItem[] }) => {
     setTodos([...todos, item]);
   };
 
+  const toggleItemDone = (itemId: string) => {
+    setTodos(todos.filter( todo => todo.id !== itemId));
+  };
+
   return (
     <>
       <h1>Todos :</h1>
@@ -40,7 +44,10 @@ export const Todo = ({items}: { items: TodoItem[] }) => {
       <ol>
         {
           todos.map((item) =>
-            <li key={item.id} role="todo-item">${item.label}</li>)
+            <li key={item.id} role="todo-item">
+              <input type="checkbox" checked={item.done} onChange={() => toggleItemDone(item.id)}/>
+              <span>${item.label}</span>
+            </li>)
         }
       </ol>
     </>
@@ -50,7 +57,7 @@ export const Todo = ({items}: { items: TodoItem[] }) => {
 describe('Todo App', () => {
   // render an item
   it('render an item', () => {
-    const todos = [ {id: uuid(), label: 'Buy some milk', done: false} ]
+    const todos = [ {id: uuid(), label: 'Buy some milk', done: false} ];
     render(<Todo items={todos}/>);
 
     const todoItems = screen.getAllByRole('todo-item');
@@ -60,7 +67,10 @@ describe('Todo App', () => {
 
   // render multiple items
   it('render multiple items', () => {
-    const todos = [{id: uuid(), label: 'Buy some milk', done: false}, {id: uuid(), label: 'Mow the lawn', done: false}]
+    const todos = [
+      {id: uuid(), label: 'Buy some milk', done: false},
+      {id: uuid(), label: 'Mow the lawn', done: false}
+    ];
     render(<Todo items={todos}/>);
 
     const todoItems = screen.getAllByRole('todo-item');
@@ -81,5 +91,19 @@ describe('Todo App', () => {
     expect(todoItems).toHaveLength(1);
     expect(todoItems[0]).toHaveTextContent('Buy some milk');
   });
+
   // mark an item as done
+  it('mark an item as done', () => {
+    const todos = [
+      {id: uuid(), label: 'Buy some milk', done: false},
+      {id: uuid(), label: 'Mow the lawn', done: false}
+    ];
+    render(<Todo items={todos}/>);
+
+    fireEvent.click(screen.getAllByRole('checkbox')[0])
+
+    const todoItems = screen.getAllByRole('todo-item');
+    expect(todoItems).toHaveLength(1);
+    expect(todoItems[0]).toHaveTextContent('Mow the lawn');
+  });
 });
