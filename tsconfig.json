@@ -1,0 +1,11 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
+    "compilerOptions": {
+      "types": ["vitest"] //, "jest", "@testing-library/jest-dom"]
+    },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "./src/tests/setup.ts", "src/tests/vitest.d.ts"]
+}
