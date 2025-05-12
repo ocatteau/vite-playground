@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { v4 as uuid } from "uuid";
 import { ChangeEvent, KeyboardEvent, useState } from "react";
+import { useTodo } from "../useTodo";
 
 export interface TodoItem {
   id: string
@@ -26,19 +27,19 @@ export const TodoInput = ({onItemAdded} : {onItemAdded: (item: TodoItem) => void
   )
 }
 
-export const useTodo = (items: TodoItem[]) => {
-  const [todos, setTodos] = useState<TodoItem[]>(items)
-
-  const onItemAdded = (item: TodoItem) => {
-    setTodos([...todos, item]);
-  };
-
-  const markItemAsDone = (itemId: string) => {
-    setTodos(todos.filter( todo => todo.id !== itemId));
-  };
-
-  return {todos, onItemAdded, markItemAsDone}
-};
+export const TodoList = ({todos, markItemAsDone} : { todos: TodoItem[], markItemAsDone: (itemId: string) => void}) => {
+  return (
+    <ol>
+      {
+        todos.map((item) =>
+          <li key={item.id} role="todo-item">
+            <input type="checkbox" checked={item.done} onChange={() => markItemAsDone(item.id)}/>
+            <span>${item.label}</span>
+          </li>)
+      }
+    </ol>
+  )
+}
 
 export const Todo = ({items}: { items: TodoItem[] }) => {
   const { todos, onItemAdded, markItemAsDone } = useTodo(items);
@@ -47,15 +48,7 @@ export const Todo = ({items}: { items: TodoItem[] }) => {
     <>
       <h1>Todos :</h1>
       <TodoInput onItemAdded={onItemAdded}/>
-      <ol>
-        {
-          todos.map((item) =>
-            <li key={item.id} role="todo-item">
-              <input type="checkbox" checked={item.done} onChange={() => markItemAsDone(item.id)}/>
-              <span>${item.label}</span>
-            </li>)
-        }
-      </ol>
+      <TodoList todos={todos} markItemAsDone={markItemAsDone}/>
     </>
   )
 }
