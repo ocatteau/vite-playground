@@ -8,9 +8,8 @@ export interface TodoItem {
   done: boolean
 }
 
-export const Todo = ({items}: { items: TodoItem[] }) => {
+export const TodoInput = ({onItemAdded} : {onItemAdded: (item: TodoItem) => void}) => {
   const [todo, setTodo] = useState<string>("");
-  const [todos, setTodos] = useState<TodoItem[]>(items)
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setTodo(e.target.value)
@@ -18,14 +17,26 @@ export const Todo = ({items}: { items: TodoItem[] }) => {
 
   const handleAddItem = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.code === 'Enter') {
-      setTodos([...todos, {id: uuid(), label: todo, done: false}]);
+      onItemAdded({id: uuid(), label: todo, done: false});
     }
+  };
+
+  return (
+    <input type="text" role="new-item" value={todo} onChange={handleChange} onKeyDown={handleAddItem}/>
+  )
+}
+
+export const Todo = ({items}: { items: TodoItem[] }) => {
+  const [todos, setTodos] = useState<TodoItem[]>(items)
+
+  const onItemAdded = (item: TodoItem) => {
+    setTodos([...todos, item]);
   };
 
   return (
     <>
       <h1>Todos :</h1>
-      <input type="text" role="new-item" value={todo} onChange={handleChange} onKeyDown={handleAddItem}/>
+      <TodoInput onItemAdded={onItemAdded}/>
       <ol>
         {
           todos.map((item) =>
